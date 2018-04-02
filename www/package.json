@@ -1,0 +1,29 @@
+{
+  "name": "cznp-blog",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Olafur Waage",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "vue": "^2.5.2",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^6.0.0",
+    "vue-router": "^3.0.1"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.11",
+    "ts-loader": "^2.3.7",
+    "typescript": "^2.7.2",
+    "vue-loader": "^12.2.2",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^2.7.0"
+  }
+}
