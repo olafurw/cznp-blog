@@ -8,7 +8,7 @@ import BlogListEntry from "./components/BlogListEntry.vue";
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-    mode: 'hash',
+    mode: 'history',
     routes: [
         { path: '/', component: BlogList },
         { path: '/blog/:id', component: Blog, props: true }
