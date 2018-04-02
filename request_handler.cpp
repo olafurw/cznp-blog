@@ -102,8 +102,97 @@ locExtractBlog(
     return {};
 }
 
-static void
-locHttp200Response(
+static std::optional<std::string>
+locFindBlogData(
+    const std::string&  aPath)
+{
+    const auto blogOptional = locExtractBlog(aPath);
+    if (!blogOptional)
+    {
+        return {};
+    }
+
+    const auto& blog = blogOptional.value();
+
+    json j;
+    j["id"] = blog.myId;
+    j["title"] = blog.myTitle;
+    j["date"] = blog.myDate;
+    j["text"] = utils::file_to_string("../blog/" + std::to_string(blog.myId) + ".txt");
+
+    return j.dump();
+}
+
+RequestHandler::RequestHandler()
+{
+}
+
+RequestHandler::~RequestHandler()
+{
+}
+
+void
+RequestHandler::OnRequest(
+    const int       aSocket,
+    const Request   aRequest)
+{
+    std::cout << aRequest.myPath << std::endl;
+
+    if (aRequest.myPath == "/")
+    {
+        PrivResponse200(aSocket, utils::file_to_string("../www/index.html"), "text/html");
+        return;
+    }
+
+    if (aRequest.myPath.substr(0, 6) == "/blog/")
+    {
+        const auto exist = locIsBlogExists(aRequest.myPath);
+        if (!exist)
+        {
+            PrivResponse404(aSocket);
+            return;
+        }
+
+        PrivResponse200(aSocket, utils::file_to_string("../www/index.html"), "text/html");
+        return;
+    }
+
+    if (aRequest.myPath == "/main.css")
+    {
+        PrivResponse200(aSocket, utils::file_to_string("../www/main.css"), "text/css");
+        return;
+    }
+
+    if (aRequest.myPath == "/dist/build.js")
+    {
+        PrivResponse200(aSocket, utils::file_to_string("../www/dist/build.js"), "application/javascript");
+        return;
+    }
+
+    if (aRequest.myPath == "/blog-list/")
+    {
+        PrivResponse200(aSocket, utils::file_to_string("../blog/list.json"), "application/json");
+        return;
+    }
+
+    if (aRequest.myPath.substr(0, 11) == "/blog-data/")
+    {
+        const auto blogDataOptional = locFindBlogData(aRequest.myPath);
+        if (!blogDataOptional)
+        {
+            PrivResponse404(aSocket);
+            return;
+        }
+
+        PrivResponse200(aSocket, blogDataOptional.value(), "application/json");
+        return;
+    }
+
+    PrivResponse404(aSocket);
+}
+
+void
+RequestHandler::PrivResponse200(
     const int           aSocket,
     const std::string&  aResponseString,
     const std::string&  aFileMimeType)
@@ -125,8 +214,8 @@ Content-Length: {1}
     close(aSocket);
 }
 
-static void
-locHttp404Response(
+void
+RequestHandler::PrivResponse404(
     const int           aSocket)
 {
     static const std::string header = R"header(HTTP/1.0 404 Not Found
@@ -142,82 +231,4 @@ Content-Length: 3
 
     write(aSocket, header.c_str(), header.size());
     close(aSocket);
-}
-
-RequestHandler::RequestHandler()
-{
-
-}
-
-RequestHandler::~RequestHandler()
-{
-
-}
-
-void
-RequestHandler::OnRequest(
-    const int       aSocket,
-    const Request   aRequest)
-{
-    std::cout << aRequest.myPath << std::endl;
-
-    if (aRequest.myPath == "/")
-    {
-        locHttp200Response(aSocket, utils::file_to_string("../www/index.html"), "text/html");
-        return;
-    }
-
-    if (aRequest.myPath.substr(0, 6) == "/blog/")
-    {
-        const auto exist = locIsBlogExists(aRequest.myPath);
-        if (!exist)
-        {
-            locHttp404Response(aSocket);
-            return;
-        }
-
-        locHttp200Response(aSocket, utils::file_to_string("../www/index.html"), "text/html");
-        return;
-    }
-
-    if (aRequest.myPath == "/main.css")
-    {
-        locHttp200Response(aSocket, utils::file_to_string("../www/main.css"), "text/css");
-        return;
-    }
-
-    if (aRequest.myPath == "/dist/build.js")
-    {
-        locHttp200Response(aSocket, utils::file_to_string("../www/dist/build.js"), "application/javascript");
-        return;
-    }
-
-    if (aRequest.myPath == "/blog-list/")
-    {
-        locHttp200Response(aSocket, utils::file_to_string("../blog/list.json"), "application/json");
-        return;
-    }
-
-    if (aRequest.myPath.substr(0, 11) == "/blog-data/")
-    {
-        const auto blogOptional = locExtractBlog(aRequest.myPath);
-        if (!blogOptional)
-        {
-            locHttp404Response(aSocket);
-            return;
-        }
-
-        const auto& blog = blogOptional.value();
-
-        json j;
-        j["id"] = blog.myId;
-        j["title"] = blog.myTitle;
-        j["date"] = blog.myDate;
-        j["text"] = utils::file_to_string("../blog/" + std::to_string(blog.myId) + ".txt");
-
-        locHttp200Response(aSocket, j.dump(), "application/json");
-        return;
-    }
-
-    locHttp404Response(aSocket);
 }

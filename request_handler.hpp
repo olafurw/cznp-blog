@@ -12,11 +12,16 @@ public:
                         ~RequestHandler();
     
     void                OnRequest(
-                            const int       aSocket,
-                            const Request   aRequest);
+                            const int           aSocket,
+                            const Request       aRequest);
 
 private:
-
+    void                PrivResponse200(
+                            const int           aSocket,
+                            const std::string&  aResponseString,
+                            const std::string&  aFileMimeType);
+    void                PrivResponse404(
+                            const int           aSocket);
 };
 
 #endif
