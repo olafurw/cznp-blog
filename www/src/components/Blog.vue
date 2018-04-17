@@ -2,8 +2,8 @@
 <template>
     <div v-if="HasBlog">
         <div class="Blog">
-            <div>{{myBlog.title}}</div>
-            <div>{{myBlog.text}}</div>
+            <div><h3>{{myBlog.title}}</h3></div>
+            <div v-html="myBlog.text"></div>
         </div>
     </div>
 </template>

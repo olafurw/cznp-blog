@@ -188,6 +188,12 @@ RequestHandler::OnRequest(
         return;
     }
 
+    if (aRequest.myPath == "/images/logo.png")
+    {
+        PrivResponse200(aSocket, utils::file_to_string("../www/images/logo.png"), "image/png");
+        return;
+    }
+
     PrivResponse404(aSocket);
 }
 

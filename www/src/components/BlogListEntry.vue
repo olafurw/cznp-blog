@@ -3,7 +3,7 @@
     <div class="BlogListEntry">
         <div class="Title">
             <router-link :to="BlogUrl">
-                {{title}}
+                <h3>{{title}}</h3>
             </router-link>
         </div>
         <div class="Date">{{date}}</div>
