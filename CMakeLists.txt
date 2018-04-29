@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(blog_server)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -O0 -Wall -Wextra -Wpedantic -Wno-reorder") 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -Wall -Wextra -Wpedantic -Wno-reorder") 
 
 set(LIBRARY_FILES
     libraries/format.cc

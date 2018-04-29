@@ -57,7 +57,7 @@ locIsBlogExists(
         const json blogList = json::parse(blogListJson);
         for(const auto& blogEntry : blogList)
         {
-            if (blogEntry["id"] == blogId)
+            if (blogEntry["id"].get<int>() == blogId)
             {
                 return true;
             }
@@ -88,7 +88,7 @@ locExtractBlog(
         const json blogList = json::parse(blogListJson);
         for(const auto& blogEntry : blogList)
         {
-            if (blogEntry["id"] == blogId)
+            if (blogEntry["id"].get<int>() == blogId)
             {
                 return Blog{blogId, blogEntry["title"], blogEntry["date"]};
             }
@@ -144,7 +144,8 @@ RequestHandler::OnRequest(
         return;
     }
 
-    if (aRequest.myPath.substr(0, 6) == "/blog/")
+    if (aRequest.myPath.size() >= 6 
+		&& aRequest.myPath.substr(0, 6) == "/blog/")
     {
         const auto exist = locIsBlogExists(aRequest.myPath);
         if (!exist)
@@ -175,7 +176,8 @@ RequestHandler::OnRequest(
         return;
     }
 
-    if (aRequest.myPath.substr(0, 11) == "/blog-data/")
+    if (aRequest.myPath.size() >= 11
+		&& aRequest.myPath.substr(0, 11) == "/blog-data/")
     {
         const auto blogDataOptional = locFindBlogData(aRequest.myPath);
         if (!blogDataOptional)
