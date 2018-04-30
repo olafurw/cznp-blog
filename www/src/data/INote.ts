@@ -1,4 +1,4 @@
-export interface IBlog
+export interface INote
 {
     id: number
     date: string;

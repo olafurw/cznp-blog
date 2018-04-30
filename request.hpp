@@ -12,20 +12,20 @@ enum RouteMethod
 
 struct Request
 {
-    Request(): myMethod(RouteMethod_Unknown) { std::cout << "default ctor\n"; };
+    Request(): myMethod(RouteMethod_Unknown) { };
     Request(
         const RouteMethod   aMethod,
         const std::string&  aPath)
         : myMethod(aMethod)
-        , myPath(aPath){ std::cout << "ctor\n"; }
+        , myPath(aPath){ }
     Request(
         const Request&  aRequest)
         : myMethod(aRequest.myMethod)
-        , myPath(aRequest.myPath){ std::cout << "copy ctor\n"; }
+        , myPath(aRequest.myPath){ }
     Request(
         Request&&       aRequest)
         : myMethod(aRequest.myMethod)
-        , myPath(aRequest.myPath){ std::cout << "move ctor\n"; }
+        , myPath(aRequest.myPath){ }
 
     const RouteMethod   myMethod;
     const std::string   myPath;

@@ -6,7 +6,9 @@
         "module": "es2015",
         "moduleResolution": "node",
         "target": "es5",
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "noImplicitAny": false, // waage: remove, Note.vue showdown messes this up
+        "strictNullChecks": false
     },
     "include": [
         "./src/**/*"

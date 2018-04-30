@@ -1,9 +1,9 @@
-<!-- src/components/BlogList.vue -->
+<!-- src/components/NoteList.vue -->
 <template>
     <div>
-        <div v-if="HasBlogList()">
-            <div v-for="blog in myBlogList">
-                <BlogListEntry :title="blog.title" :date="blog.date" :id="blog.id" />
+        <div v-if="HasNoteList()">
+            <div v-for="note in myNoteList">
+                <NoteListEntry :title="note.title" :date="note.date" :id="note.id" />
             </div>
         </div>
     </div>
@@ -15,27 +15,27 @@ import Component from 'vue-class-component'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
 import axios from "axios"
 
-import BlogListEntry from "./BlogListEntry.vue";
+import NoteListEntry from "./NoteListEntry.vue";
 
-import { IBlogList } from '../data/IBlogList'
+import { INoteList } from '../data/INoteList'
 
 @Component({
     components: {
-        BlogListEntry
+        NoteListEntry
     }
 })
-export default class BlogList extends Vue
+export default class NoteList extends Vue
 {
-    myBlogList: IBlogList[] | null = null;
+    myNoteList: INoteList[] | null = null;
 
-    HasBlogList(): boolean
+    HasNoteList(): boolean
     {
-        return this.myBlogList !== null;
+        return this.myNoteList !== null;
     }
 
     created()
     {
-        axios.get('/blog-list/')
+        axios.get('/note-list/')
         .then((aResponse: any) =>
         {
             if (!aResponse.data)
@@ -43,7 +43,7 @@ export default class BlogList extends Vue
                 return;
             }
 
-            this.myBlogList = aResponse.data;
+            this.myNoteList = aResponse.data;
         })
         .catch((aError: any) =>
         {

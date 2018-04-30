@@ -1,12 +1,12 @@
-<!-- src/components/BlogListEntry.vue -->
+<!-- src/components/NoteListEntry.vue -->
 <template>
-    <div class="BlogListEntry">
+    <div class="NoteListEntry">
         <div class="Title">
-            <router-link :to="BlogUrl">
-                <h3>{{title}}</h3>
+            <router-link :to="NoteUrl">
+                {{title}}
             </router-link>
+            <span class="Date"> - {{date}}</span>
         </div>
-        <div class="Date">{{date}}</div>
     </div>
 </template>
 
@@ -16,8 +16,8 @@ import Vue from "vue";
 export default Vue.extend({
     props: ['title', 'date', 'id'],
     computed: {
-        BlogUrl(): string {
-            return '/blog/' + this.id;
+        NoteUrl(): string {
+            return '/note/' + this.id;
         }
     }
 });

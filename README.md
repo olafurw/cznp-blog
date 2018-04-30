@@ -1,1 +1,1 @@
-# cznp-blog
+# cznp-notes

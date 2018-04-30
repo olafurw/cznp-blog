@@ -12,7 +12,7 @@
 
 using namespace nlohmann;
 
-struct Blog
+struct Note
 {
     int             myId;
     std::string     myTitle;
@@ -20,7 +20,7 @@ struct Blog
 };
 
 static int
-locParseBlogData(
+locParseNoteData(
     const std::string&  aPath)
 {
     auto pathSplit = utils::split_string(aPath, '/', false, 3);
@@ -41,23 +41,23 @@ locParseBlogData(
 }
 
 static bool
-locIsBlogExists(
+locIsNoteExists(
     const std::string&  aPath)
 {
-    const int blogId = locParseBlogData(aPath);
-    if (blogId < 1)
+    const int noteId = locParseNoteData(aPath);
+    if (noteId < 1)
     {
         return false;
     }
 
-    const std::string blogListJson = utils::file_to_string("../blog/list.json");
+    const std::string noteListJson = utils::file_to_string("../notes/list.json");
 
     try
     {
-        const json blogList = json::parse(blogListJson);
-        for(const auto& blogEntry : blogList)
+        const json noteList = json::parse(noteListJson);
+        for(const auto& noteEntry : noteList)
         {
-            if (blogEntry["id"].get<int>() == blogId)
+            if (noteEntry["id"].get<int>() == noteId)
             {
                 return true;
             }
@@ -71,26 +71,26 @@ locIsBlogExists(
     return false;
 }
 
-static std::optional<Blog>
-locExtractBlog(
+static std::optional<Note>
+locExtractNote(
     const std::string&  aPath)
 {
-    const int blogId = locParseBlogData(aPath);
-    if (blogId < 1)
+    const int noteId = locParseNoteData(aPath);
+    if (noteId < 1)
     {
         return {};
     }
 
-    const std::string blogListJson = utils::file_to_string("../blog/list.json");
+    const std::string noteListJson = utils::file_to_string("../notes/list.json");
 
     try
     {
-        const json blogList = json::parse(blogListJson);
-        for(const auto& blogEntry : blogList)
+        const json noteList = json::parse(noteListJson);
+        for(const auto& noteEntry : noteList)
         {
-            if (blogEntry["id"].get<int>() == blogId)
+            if (noteEntry["id"].get<int>() == noteId)
             {
-                return Blog{blogId, blogEntry["title"], blogEntry["date"]};
+                return Note{noteId, noteEntry["title"], noteEntry["date"]};
             }
         }
     }
@@ -103,22 +103,22 @@ locExtractBlog(
 }
 
 static std::optional<std::string>
-locFindBlogData(
+locFindNoteData(
     const std::string&  aPath)
 {
-    const auto blogOptional = locExtractBlog(aPath);
-    if (!blogOptional)
+    const auto noteOptional = locExtractNote(aPath);
+    if (!noteOptional)
     {
         return {};
     }
 
-    const auto& blog = blogOptional.value();
+    const auto& note = noteOptional.value();
 
     json j;
-    j["id"] = blog.myId;
-    j["title"] = blog.myTitle;
-    j["date"] = blog.myDate;
-    j["text"] = utils::file_to_string("../blog/" + std::to_string(blog.myId) + ".txt");
+    j["id"] = note.myId;
+    j["title"] = note.myTitle;
+    j["date"] = note.myDate;
+    j["text"] = utils::file_to_string("../notes/" + std::to_string(note.myId) + ".txt");
 
     return j.dump();
 }
@@ -138,16 +138,24 @@ RequestHandler::OnRequest(
 {
     std::cout << aRequest.myPath << std::endl;
 
-    if (aRequest.myPath == "/")
+    if (aRequest.myPath == "/"
+        || aRequest.myPath == "/about"
+        || aRequest.myPath == "/about/")
     {
         PrivResponse200(aSocket, utils::file_to_string("../www/index.html"), "text/html");
         return;
     }
 
-    if (aRequest.myPath.size() >= 6 
-		&& aRequest.myPath.substr(0, 6) == "/blog/")
+    if (aRequest.myPath == "/about-data/")
     {
-        const auto exist = locIsBlogExists(aRequest.myPath);
+        PrivResponse200(aSocket, utils::file_to_string("../notes/about.txt"), "text/plain");
+        return;
+    }
+
+    if (aRequest.myPath.size() >= 6 
+		&& aRequest.myPath.substr(0, 6) == "/note/")
+    {
+        const auto exist = locIsNoteExists(aRequest.myPath);
         if (!exist)
         {
             PrivResponse404(aSocket);
@@ -170,23 +178,23 @@ RequestHandler::OnRequest(
         return;
     }
 
-    if (aRequest.myPath == "/blog-list/")
+    if (aRequest.myPath == "/note-list/")
     {
-        PrivResponse200(aSocket, utils::file_to_string("../blog/list.json"), "application/json");
+        PrivResponse200(aSocket, utils::file_to_string("../notes/list.json"), "application/json");
         return;
     }
 
     if (aRequest.myPath.size() >= 11
-		&& aRequest.myPath.substr(0, 11) == "/blog-data/")
+		&& aRequest.myPath.substr(0, 11) == "/note-data/")
     {
-        const auto blogDataOptional = locFindBlogData(aRequest.myPath);
-        if (!blogDataOptional)
+        const auto noteDataOptional = locFindNoteData(aRequest.myPath);
+        if (!noteDataOptional)
         {
             PrivResponse404(aSocket);
             return;
         }
 
-        PrivResponse200(aSocket, blogDataOptional.value(), "application/json");
+        PrivResponse200(aSocket, noteDataOptional.value(), "application/json");
         return;
     }
 

@@ -1,0 +1,42 @@
+p {
+    font-size: 150%;
+}
+
+pre {
+    font-size: 140%;
+}
+
+h1.logo {
+    font-weight: bold;
+    font-size: 400%;
+}
+
+nav.navbar {
+    margin-bottom: 15px;
+}
+
+a, a h3, .nav-color-override {
+    font-weight: bold;
+    color: #B9A170 !important;
+}
+
+.NoteListEntry a {
+    font-size: 150%;
+}
+
+.NoteListEntry .Date {
+    font-size: 120%;
+}
+
+.NoteListEntry {
+    margin-bottom: 10px;
+    border-bottom: 1px #474747 solid;
+}
+
+.Note h3 {
+    font-weight: bold;
+}
+
+.navbar {
+    padding: 0 0;
+}

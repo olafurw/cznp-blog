@@ -1,19 +1,23 @@
 import Vue from "vue";
 import VueRouter from 'vue-router';
 
-import Blog from "./components/Blog.vue";
-import BlogList from "./components/BlogList.vue";
-import BlogListEntry from "./components/BlogListEntry.vue";
+import Note from "./components/Note.vue";
+import NoteList from "./components/NoteList.vue";
+import NoteListEntry from "./components/NoteListEntry.vue";
+import About from "./components/About.vue";
 
 import "bootstrap/dist/css/bootstrap.min.css"
+import "highlight.js/styles/zenburn.css"
+import "./css/cznp.css"
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
     mode: 'history',
     routes: [
-        { path: '/', component: BlogList },
-        { path: '/blog/:id', component: Blog, props: true }
+        { path: '/', component: NoteList },
+        { path: '/note/:id', component: Note, props: true },
+        { path: '/about', component: About, props: true }
     ]
 });
 
@@ -24,16 +28,34 @@ let v = new Vue({
     <div class="container">
         <div class="row">
             <div class="col"></div>
-            <div class="col-6 text-center">
+            <div class="col-8">
                 <router-link to="/">
-                    <img src="/images/logo.png" class="img-fluid w-75" />
+                    <h1 class="logo">olafurw</h1>
                 </router-link>
             </div>
             <div class="col"></div>
         </div>
         <div class="row">
             <div class="col"></div>
-            <div class="col-6">
+            <div class="col-8 text-center">
+                <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <router-link to="/" class="nav-link nav-color-override">Notes</router-link>
+                            </li>
+                            <li class="nav-item">
+                                <router-link to="/about" class="nav-link nav-color-override">About</router-link>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-8">
                 <router-view class="view"></router-view>
             </div>
             <div class="col"></div>
@@ -42,8 +64,9 @@ let v = new Vue({
     `,
     data: { },
     components: {
-        BlogList,
-        BlogListEntry,
-        Blog
+        NoteList,
+        NoteListEntry,
+        Note,
+        About
     }
 });

@@ -1,5 +1,5 @@
 {
-  "name": "cznp-blog",
+  "name": "cznp-notes",
   "version": "1.0.0",
   "private": true,
   "description": "",
@@ -12,10 +12,15 @@
   "author": "Olafur Waage",
   "license": "Apache-2.0",
   "dependencies": {
+    "@types/highlight.js": "^9.12.2",
+    "@types/showdown": "^1.7.3",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.0",
+    "highlight.js": "^9.12.0",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.3",
+    "showdown": "^1.8.6",
+    "showdown-highlight": "^2.1.0",
     "style-loader": "^0.20.3",
     "vue": "^2.5.2",
     "vue-class-component": "^6.0.0",
@@ -25,7 +30,7 @@
   "devDependencies": {
     "css-loader": "^0.28.11",
     "ts-loader": "^2.3.7",
-    "typescript": "^2.8.1",
+    "typescript": "^2.8.3",
     "vue-loader": "^12.2.2",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^2.7.0",

@@ -8,5 +8,5 @@ popd;
 
 mkdir build;
 pushd build;
-cmake .. && make && ./blog_server;
+cmake .. && make && ./note_server;
 popd;
