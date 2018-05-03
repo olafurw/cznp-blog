@@ -2,7 +2,10 @@
 <template>
     <div v-if="HasNote">
         <div class="Note">
-            <div><h3>{{myNote.title}}</h3></div>
+            <div class="NoteHeader">
+                <span class="Title">{{myNote.title}}</span>
+                <span class="Date"> - {{myNote.date}}</span>
+            </div>
             <div v-html="myNote.text"></div>
         </div>
     </div>

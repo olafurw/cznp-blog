@@ -19,6 +19,7 @@ private:
     void                PrivResponse200(
                             const int           aSocket,
                             const std::string&  aResponseString,
+                            const time_t        aLastModified,
                             const std::string&  aFileMimeType);
     void                PrivResponse404(
                             const int           aSocket);

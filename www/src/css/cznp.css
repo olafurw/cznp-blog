@@ -33,8 +33,17 @@ a, a h3, .nav-color-override {
     border-bottom: 1px #474747 solid;
 }
 
-.Note h3 {
+.Note .Title {
     font-weight: bold;
+    font-size: 150%;
+}
+
+.Note .Date {
+    font-size: 120%;
+}
+
+.Note .NoteHeader {
+    margin-bottom: 10px;
 }
 
 .navbar {

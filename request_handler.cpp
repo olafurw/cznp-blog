@@ -102,7 +102,7 @@ locExtractNote(
     return {};
 }
 
-static std::optional<std::string>
+static std::optional<std::pair<std::string, time_t>>
 locFindNoteData(
     const std::string&  aPath)
 {
@@ -120,7 +120,9 @@ locFindNoteData(
     j["date"] = note.myDate;
     j["text"] = utils::file_to_string("../notes/" + std::to_string(note.myId) + ".txt");
 
-    return j.dump();
+    const time_t lastModified = utils::file_modified("../notes/" + std::to_string(note.myId) + ".txt");
+
+    return std::pair<std::string, time_t>(j.dump(), lastModified);
 }
 
 RequestHandler::RequestHandler()
@@ -142,13 +144,23 @@ RequestHandler::OnRequest(
         || aRequest.myPath == "/about"
         || aRequest.myPath == "/about/")
     {
-        PrivResponse200(aSocket, utils::file_to_string("../www/index.html"), "text/html");
+        PrivResponse200(
+            aSocket, 
+            utils::file_to_string("../www/index.html"), 
+            utils::file_modified("../www/index.html"), 
+            "text/html"
+        );
         return;
     }
 
     if (aRequest.myPath == "/about-data/")
     {
-        PrivResponse200(aSocket, utils::file_to_string("../notes/about.txt"), "text/plain");
+        PrivResponse200(
+            aSocket,
+            utils::file_to_string("../notes/about.txt"),
+            utils::file_modified("../notes/about.txt"),
+            "text/plain"
+        );
         return;
     }
 
@@ -162,25 +174,45 @@ RequestHandler::OnRequest(
             return;
         }
 
-        PrivResponse200(aSocket, utils::file_to_string("../www/index.html"), "text/html");
+        PrivResponse200(
+            aSocket,
+            utils::file_to_string("../www/index.html"),
+            utils::file_modified("../www/index.html"),
+            "text/html"
+        );
         return;
     }
 
     if (aRequest.myPath == "/main.css")
     {
-        PrivResponse200(aSocket, utils::file_to_string("../www/main.css"), "text/css");
+        PrivResponse200(
+            aSocket,
+            utils::file_to_string("../www/main.css"),
+            utils::file_modified("../www/main.css"),
+            "text/css"
+        );
         return;
     }
 
     if (aRequest.myPath == "/dist/build.js")
     {
-        PrivResponse200(aSocket, utils::file_to_string("../www/dist/build.js"), "application/javascript");
+        PrivResponse200(
+            aSocket,
+            utils::file_to_string("../www/dist/build.js"),
+            utils::file_modified("../www/dist/build.js"),
+            "application/javascript"
+        );
         return;
     }
 
     if (aRequest.myPath == "/note-list/")
     {
-        PrivResponse200(aSocket, utils::file_to_string("../notes/list.json"), "application/json");
+        PrivResponse200(
+            aSocket,
+            utils::file_to_string("../notes/list.json"),
+            utils::file_modified("../notes/list.json"),
+            "application/json"
+        );
         return;
     }
 
@@ -194,13 +226,7 @@ RequestHandler::OnRequest(
             return;
         }
 
-        PrivResponse200(aSocket, noteDataOptional.value(), "application/json");
-        return;
-    }
-
-    if (aRequest.myPath == "/images/logo.png")
-    {
-        PrivResponse200(aSocket, utils::file_to_string("../www/images/logo.png"), "image/png");
+        PrivResponse200(aSocket, noteDataOptional.value().first, noteDataOptional.value().second, "application/json");
         return;
     }
 
@@ -211,21 +237,25 @@ void
 RequestHandler::PrivResponse200(
     const int           aSocket,
     const std::string&  aResponseString,
+    const time_t        aLastModified,
     const std::string&  aFileMimeType)
 {
+    static const std::string timeFormat = "%a, %d %b %Y %H:%M:%S %Z";
     static const std::string header = R"header(HTTP/1.0 200 OK
 Server: cznp_server
 MIME-version: 1.0
 Content-type: {0}
-Last-Modified: Thu, 1 Jan 1970 00:00:00 GMT
-Content-Length: {1}
+Last-Modified: {1}
+Content-Length: {2}
 
-{2}
+{3}
 
 )header";
-    
-    const std::string fileData = fmt::format(header, aFileMimeType, aResponseString.size(), aResponseString);
 
+    char buf[64];
+    std::strftime(buf, sizeof(buf), timeFormat.c_str(), std::gmtime(&aLastModified));
+    
+    const std::string fileData = fmt::format(header, aFileMimeType, buf, aResponseString.size(), aResponseString);
     write(aSocket, fileData.c_str(), fileData.size());
     close(aSocket);
 }
