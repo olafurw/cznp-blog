@@ -5,7 +5,7 @@ static const unsigned int locReadSize = 8 * 1024;
 Listener::Listener()
     : myId(1)
     , myAddressInfo(nullptr)
-    , myPort("8080")
+    , myPort("80")
     , myConnectionQueueSize(30)
     , mySocket(-1)
 {
