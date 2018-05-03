@@ -18,7 +18,7 @@ import { Emit, Prop, Watch } from 'vue-property-decorator'
 import axios from "axios"
 import * as showdown from "showdown";
 import * as showdownHighlight from "showdown-highlight";
-const locConverter = new showdown.Converter({ ghCodeBlocks: false, extensions: [showdownHighlight] });
+const locConverter = new showdown.Converter({ ghCodeBlocks: true, extensions: [showdownHighlight] });
 
 import { INote } from '../data/INote'
 
